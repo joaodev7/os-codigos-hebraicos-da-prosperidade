@@ -1,5 +1,7 @@
 # Os Códigos Hebraicos da Prosperidade — Landing Page de Vendas
 
+🔗 **URL em Produção (Cloudflare Workers):** [https://os-codigos-hebraicos-da-prosperidade.joaodbv.workers.dev](https://os-codigos-hebraicos-da-prosperidade.joaodbv.workers.dev)
+
 Landing Page de alta conversão desenvolvida para o livro digital **Os Códigos Hebraicos da Prosperidade**, fundamentada nas Escrituras Sagradas e nas raízes originais do hebraico bíblico (*B’rakhah*, *Tsedaká*, *Shalom* e o *Princípio de José*).
 
 ## ✨ Recursos e Arquitetura
