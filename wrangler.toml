@@ -2,3 +2,8 @@ name = "os-codigos-hebraicos-da-prosperidade"
 main = "worker.js"
 compatibility_date = "2026-10-21"
 workers_dev = true
+
+[vars]
+# Você pode definir aqui ou diretamente no painel da Cloudflare (Settings -> Variables and Secrets)
+KIWIFY_CHECKOUT_URL = ""
+META_PIXEL_ID = ""

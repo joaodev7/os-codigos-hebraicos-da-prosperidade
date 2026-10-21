@@ -24,13 +24,12 @@ Landing Page de alta conversão desenvolvida para o livro digital **Os Códigos 
 - `worker.js` & `wrangler.toml` — Script de distribuição Edge no Cloudflare Workers
 - `copy_da_landing_page_os_c_digos_hebraicos_da_prosperidade.md` — Copy original do projeto
 
-## ⚙️ Como Configurar Link de Checkout Externo (Kiwify / Hotmart / Kirvano / Stripe)
+## ⚙️ Como Configurar a Kiwify via Variáveis de Ambiente (`.env` / Cloudflare)
 
-No arquivo [`script.js`](./script.js), edite a propriedade `externalCheckoutUrl` dentro de `CHECKOUT_CONFIG`:
+O projeto já está integrado para ler as variáveis de ambiente em tempo real diretamente do Cloudflare Workers (`env.KIWIFY_CHECKOUT_URL` e `env.META_PIXEL_ID`):
 
-```js
-const CHECKOUT_CONFIG = {
-  // ...
-  externalCheckoutUrl: 'https://pay.kiwify.com.br/SEU_LINK_AQUI'
-};
-```
+1. Acesse o painel da **Cloudflare** → **Workers & Pages** → **os-codigos-hebraicos-da-prosperidade**.
+2. Vá na aba **Settings** → **Variables and Secrets**.
+3. Edite a variável já criada `KIWIFY_CHECKOUT_URL` e cole o seu link de pagamento da Kiwify (ex.: `https://pay.kiwify.com.br/SEU_CODIGO`).
+4. *(Opcional)* Preencha `META_PIXEL_ID` caso queira ativar o rastreamento automático de `PageView` e `InitiateCheckout` do Facebook/Instagram Ads.
+5. **Repasse Automático de UTMs**: Todos os parâmetros de anúncios (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `src`, `sck`, `fbclid`, `gclid`) são repassados automaticamente da Landing Page para o checkout da Kiwify.

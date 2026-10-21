@@ -1,11 +1,12 @@
 /**
- * OS CÓDIGOS HEBRAICOS DA PROSPERIDADE — INTERACTIVE CONVERSION ENGINE
- * Handles:
- * - Dynamic Order Bumps calculation (Base R$ 29,90 + 3 optional Order Bumps)
- * - Accessible FAQ Accordion (WCAG 2.1 AA)
- * - Checkout Modal & Configurable Payment Gateway Redirect
- * - Sticky Mobile Conversion Bar
+ * OS CÓDIGOS HEBRAICOS DA PROSPERIDADE — INTERACTIVE CONVERSION & KIWIFY ENGINE
+ * Suporta variáveis de ambiente injetadas pelo Cloudflare Worker (window.__ENV__):
+ * - KIWIFY_CHECKOUT_URL: Link do checkout da Kiwify (ex: https://pay.kiwify.com.br/xxxxxxx)
+ * - META_PIXEL_ID: ID do Pixel da Meta (opcional)
+ * - SUPPORT_EMAIL: E-mail de suporte exibido na página (opcional)
  */
+
+const runtimeEnv = (typeof window !== 'undefined' && window.__ENV__) ? window.__ENV__ : {};
 
 const CHECKOUT_CONFIG = {
   baseProduct: {
@@ -37,8 +38,8 @@ const CHECKOUT_CONFIG = {
       price: 19.90
     }
   },
-  // URL externa de checkout (ex: Kiwify, Hotmart, Kirvano, Stripe). Se vazio, abre o checkout integrado.
-  externalCheckoutUrl: ''
+  // Lido automaticamente da variável de ambiente KIWIFY_CHECKOUT_URL no Cloudflare
+  externalCheckoutUrl: (runtimeEnv.KIWIFY_CHECKOUT_URL || '').trim()
 };
 
 const state = {
@@ -67,6 +68,33 @@ function calculateTotals() {
 
   const savings = originalTotal - total;
   return { total, originalTotal, savings };
+}
+
+/**
+ * Constrói a URL final da Kiwify repassando todos os parâmetros de rastreamento
+ * (utm_source, utm_medium, utm_campaign, utm_content, utm_term, src, sck, fbclid, gclid)
+ */
+function buildKiwifyCheckoutUrl(baseUrl) {
+  try {
+    const targetUrl = new URL(baseUrl, window.location.origin);
+    const currentParams = new URLSearchParams(window.location.search);
+
+    // Repassa UTMs e parâmetros de afiliado/rastreamento para a Kiwify
+    currentParams.forEach((value, key) => {
+      if (!targetUrl.searchParams.has(key)) {
+        targetUrl.searchParams.set(key, value);
+      }
+    });
+
+    // Repassa indicação dos Order Bumps pré-selecionados na LP
+    if (state.selectedBumps.size > 0) {
+      targetUrl.searchParams.set('bumps', Array.from(state.selectedBumps).join(','));
+    }
+
+    return targetUrl.toString();
+  } catch (_) {
+    return baseUrl;
+  }
 }
 
 function updateOrderSummaryUI() {
@@ -110,7 +138,6 @@ function updateOrderSummaryUI() {
     summaryList.innerHTML = html;
   }
 
-  // Sync modal list if open
   const modalItemsList = document.getElementById('modal-selected-items');
   if (modalItemsList && summaryList) {
     modalItemsList.innerHTML = summaryList.innerHTML;
@@ -174,7 +201,6 @@ function initFAQAccordion() {
 
     button.addEventListener('click', () => {
       const isExpanded = item.getAttribute('aria-expanded') === 'true';
-      // Close other items for clean reading
       faqItems.forEach((other) => {
         other.setAttribute('aria-expanded', 'false');
         const otherBtn = other.querySelector('.faq-trigger');
@@ -189,17 +215,24 @@ function initFAQAccordion() {
   });
 }
 
-function openCheckoutModal() {
+function triggerCheckout() {
+  const { total } = calculateTotals();
+
+  // Dispara evento InitiateCheckout no Meta Pixel se configurado
+  if (typeof window.fbq === 'function') {
+    window.fbq('track', 'InitiateCheckout', {
+      value: total,
+      currency: 'BRL'
+    });
+  }
+
+  // Se KIWIFY_CHECKOUT_URL estiver configurado no Cloudflare env, redireciona direto para a Kiwify
   if (CHECKOUT_CONFIG.externalCheckoutUrl) {
-    const params = new URLSearchParams();
-    if (state.selectedBumps.size > 0) {
-      params.set('bumps', Array.from(state.selectedBumps).join(','));
-    }
-    const separator = CHECKOUT_CONFIG.externalCheckoutUrl.includes('?') ? '&' : '?';
-    window.location.href = `${CHECKOUT_CONFIG.externalCheckoutUrl}${params.toString() ? separator + params.toString() : ''}`;
+    window.location.href = buildKiwifyCheckoutUrl(CHECKOUT_CONFIG.externalCheckoutUrl);
     return;
   }
 
+  // Fallback caso a variável ainda esteja vazia
   updateOrderSummaryUI();
   const modal = document.getElementById('checkout-modal');
   if (modal) {
@@ -220,12 +253,12 @@ function closeCheckoutModal() {
   }
 }
 
-function initCheckoutModal() {
+function initCheckoutActions() {
   const openBtns = document.querySelectorAll('[data-open-checkout]');
   openBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      openCheckoutModal();
+      triggerCheckout();
     });
   });
 
@@ -241,7 +274,6 @@ function initCheckoutModal() {
     });
   }
 
-  // Payment method tabs inside modal
   const methodBtns = document.querySelectorAll('[data-payment-method]');
   const pixPanel = document.getElementById('payment-panel-pix');
   const cardPanel = document.getElementById('payment-panel-card');
@@ -267,11 +299,14 @@ function initCheckoutModal() {
     });
   });
 
-  // Form submission feedback
   const checkoutForm = document.getElementById('checkout-modal-form');
   if (checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (CHECKOUT_CONFIG.externalCheckoutUrl) {
+        window.location.href = buildKiwifyCheckoutUrl(CHECKOUT_CONFIG.externalCheckoutUrl);
+        return;
+      }
       const feedback = document.getElementById('checkout-submit-feedback');
       const submitBtn = document.getElementById('checkout-submit-btn');
       if (submitBtn) {
@@ -309,6 +344,6 @@ function initStickyBar() {
 document.addEventListener('DOMContentLoaded', () => {
   initOrderBumps();
   initFAQAccordion();
-  initCheckoutModal();
+  initCheckoutActions();
   initStickyBar();
 });
