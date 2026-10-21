@@ -1,0 +1,310 @@
+/* ==========================================================================
+   OS CÓDIGOS HEBRAICOS DA PROSPERIDADE — DESIGN SYSTEM & CUSTOM STYLES
+   ========================================================================== */
+
+:root {
+  --bg-obsidian: #06080d;
+  --bg-sanctuary: #0c1018;
+  --bg-card: #111724;
+  --bg-card-hover: #161e2e;
+  --gold-light: #f6e6b4;
+  --gold-primary: #d4af37;
+  --gold-deep: #9e7a1c;
+  --gold-glow: rgba(212, 175, 55, 0.28);
+  --parchment: #f4efe6;
+  --text-primary: #f8f5ee;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --emerald-cta: #10b981;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-obsidian);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: var(--bg-obsidian);
+  overflow-x: hidden;
+  selection-background-color: var(--gold-primary);
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.35);
+  color: #ffffff;
+}
+
+.font-serif-sacred {
+  font-family: 'Cinzel', Georgia, serif;
+}
+
+.font-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* Metallic Gold Text Gradient */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fff3c4 0%, #d4af37 45%, #aa8010 75%, #f5e2a8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Sacred Background Mesh & Rays */
+.hero-radial-bg {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.16) 0%, rgba(12, 16, 24, 0.6) 45%, #06080d 80%),
+    linear-gradient(180deg, #06080d 0%, #0b0f17 100%);
+}
+
+.sacred-grid-overlay {
+  background-image:
+    linear-gradient(to right, rgba(212, 175, 55, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Gold Borders & Cards */
+.gold-border-card {
+  background: linear-gradient(180deg, rgba(20, 27, 42, 0.85) 0%, rgba(11, 15, 24, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 243, 196, 0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gold-border-card:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 28px rgba(212, 175, 55, 0.12);
+  transform: translateY(-3px);
+}
+
+/* ==========================================================================
+   3D BOOK MOCKUP & ANCIENT PARCHMENT SCROLL
+   ========================================================================== */
+
+.book-scene {
+  perspective: 1400px;
+  position: relative;
+}
+
+.book-3d {
+  position: relative;
+  width: 310px;
+  height: 475px;
+  transform-style: preserve-3d;
+  transform: rotateY(-18deg) rotateX(4deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 auto;
+}
+
+.book-scene:hover .book-3d {
+  transform: rotateY(-8deg) rotateX(2deg) translateY(-6px);
+}
+
+@media (max-width: 640px) {
+  .book-3d {
+    width: 260px;
+    height: 400px;
+    transform: rotateY(-12deg) rotateX(3deg);
+  }
+}
+
+/* Front Cover */
+.book-front {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px 10px 10px 4px;
+  background-color: #070a10;
+  background-image: url('assets/capa-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  box-shadow:
+    -15px 25px 50px rgba(0, 0, 0, 0.85),
+    0 0 45px rgba(212, 175, 55, 0.22),
+    inset 4px 0 12px rgba(255, 230, 150, 0.25),
+    inset -1px 0 4px rgba(0, 0, 0, 0.8);
+  transform: translateZ(22px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 28px 20px 22px;
+}
+
+/* Leather Spine Crease */
+.book-front::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  width: 3px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.75), rgba(212, 175, 55, 0.35), rgba(0, 0, 0, 0.5));
+  z-index: 3;
+}
+
+/* Ornate Corner Frame Inside Cover */
+.book-ornate-frame {
+  position: absolute;
+  inset: 10px 10px 10px 18px;
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.book-ornate-frame::before,
+.book-ornate-frame::after {
+  content: '◇';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #d4af37;
+  background: #060911;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.book-ornate-frame::before {
+  top: -7px;
+}
+
+.book-ornate-frame::after {
+  bottom: -7px;
+}
+
+/* Book 3D Left Spine */
+.book-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 44px;
+  background: linear-gradient(90deg, #05070b 0%, #161209 35%, #3a2d11 50%, #120e07 85%, #05070b 100%);
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+  transform: rotateY(-90deg) translateZ(22px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Book Pages Right Edge */
+.book-pages {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  right: 0;
+  width: 40px;
+  background: repeating-linear-gradient(
+    90deg,
+    #e6dec8 0px,
+    #d2c6a8 2px,
+    #f3ebd9 4px
+  );
+  transform: rotateY(90deg) translateZ(288px);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 640px) {
+  .book-pages {
+    transform: rotateY(90deg) translateZ(238px);
+  }
+}
+
+/* Back Cover */
+.book-back {
+  position: absolute;
+  inset: 0;
+  background: #06080e;
+  border-radius: 4px 10px 10px 4px;
+  transform: translateZ(-22px);
+  box-shadow: -25px 35px 65px rgba(0, 0, 0, 0.95);
+}
+
+/* Subtle Ancient Parchment Scroll Companion */
+.parchment-scroll {
+  background: linear-gradient(135deg, #2b2112 0%, #1c150b 60%, #120d06 100%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(212, 175, 55, 0.15);
+}
+
+/* ==========================================================================
+   CTA BUTTONS & SHIMMER ANIMATION
+   ========================================================================== */
+
+.btn-cta-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+  box-shadow: 0 10px 35px -5px rgba(16, 185, 129, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-cta-gold:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 16px 45px -5px rgba(16, 185, 129, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.btn-cta-gold::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  animation: ctaShimmer 4s infinite;
+}
+
+@keyframes ctaShimmer {
+  0% {
+    left: -60%;
+  }
+  35%, 100% {
+    left: 140%;
+  }
+}
+
+/* Order Bump Dashed Box */
+.order-bump-card {
+  border: 2px dashed rgba(212, 175, 55, 0.45);
+  background: linear-gradient(180deg, rgba(23, 31, 48, 0.9) 0%, rgba(14, 19, 31, 0.95) 100%);
+  transition: all 0.25s ease;
+}
+
+.order-bump-card:hover {
+  border-color: #d4af37;
+  background: linear-gradient(180deg, rgba(29, 39, 60, 0.95) 0%, rgba(17, 24, 39, 0.98) 100%);
+}
+
+.order-bump-card.selected {
+  border-style: solid;
+  border-color: #10b981;
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.32) 0%, rgba(14, 19, 31, 0.95) 100%);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.18);
+}
+
+/* FAQ Accordion Smooth Transition */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+
+.faq-item[aria-expanded="true"] .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-item[aria-expanded="true"] .faq-icon {
+  transform: rotate(180deg);
+}
